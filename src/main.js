@@ -1,7 +1,5 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
 
 import { PAGE_SIZE, getImagesByQuery } from './js/pixabay-api.js';
 import {
@@ -78,23 +76,41 @@ async function handleSearch(event) {
 }
 
 loadMore.addEventListener('click', async () => {
-  currentPage += 1;
-
   if (currentPage >= maxPages) {
     hideLoadMoreBtn();
-  } else {
-    showLoadMoreBtn();
+    return;
   }
 
-  const data = await getImagesByQuery(searchQuery, currentPage);
-  const markup = createGallery(data.hits);
-  lightbox.refresh();
-  const { height: cardHeight } = document
-    .querySelector('.gallery')
-    .firstElementChild.getBoundingClientRect();
+  currentPage += 1;
+  showLoader();
 
-  window.scrollBy({
-    top: cardHeight * 2,
-    behavior: 'smooth',
-  });
+  try {
+    const data = await getImagesByQuery(searchQuery, currentPage);
+    createGallery(data.hits);
+
+    const firstGalleryItem = document.querySelector('.gallery')?.firstElementChild;
+
+    if (firstGalleryItem) {
+      const { height: cardHeight } = firstGalleryItem.getBoundingClientRect();
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+    }
+  } catch (error) {
+    currentPage -= 1;
+    iziToast.error({
+      title: 'Error',
+      message: 'Something went wrong. Please try again later.',
+      position: 'topRight',
+    });
+    console.error(error);
+  } finally {
+    hideLoader();
+    if (currentPage >= maxPages) {
+      hideLoadMoreBtn();
+    } else {
+      showLoadMoreBtn();
+    }
+  }
 });

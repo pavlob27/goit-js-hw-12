@@ -1,20 +1,15 @@
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import iziToast from 'izitoast';
 
-
-
 const lightbox = new SimpleLightbox('.gallery a', {
-    captions: true,
-    captionsData: 'alt',
-    captionDelay: 250
-
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
 });
-
 
 const galleryContainer = document.querySelector('.gallery');
 const loaderContainer = document.querySelector('.loader-container');
-
 
 export function createGallery(images) {
   const markup = images
@@ -63,19 +58,22 @@ export function hideLoader() {
   }
 }
 
-export const loadMore = document.querySelector(".btn-load-more");
+export const loadMore = document.querySelector('.btn-load-more');
 
 export function showLoadMoreBtn() {
-  loadMore.classList.remove('is-hidden');
+  if (loadMore) {
+    loadMore.classList.remove('is-hidden');
+  }
 }
 
 export function hideLoadMoreBtn() {
-  loadMore.classList.add('is-hidden');
-  iziToast.warning({
+  if (loadMore) {
+    loadMore.classList.add('is-hidden');
+
+    iziToast.info({
       title: 'Warning',
       message: 'Were sorry, but youve reached the end of search results',
       position: 'topRight',
     });
+  }
 }
-
-
