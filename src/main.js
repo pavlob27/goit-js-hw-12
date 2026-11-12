@@ -1,5 +1,7 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 import { PAGE_SIZE, getImagesByQuery } from './js/pixabay-api.js';
 import {
@@ -86,7 +88,7 @@ loadMore.addEventListener('click', async () => {
 
   const data = await getImagesByQuery(searchQuery, currentPage);
   const markup = createGallery(data.hits);
-
+  lightbox.refresh();
   const { height: cardHeight } = document
     .querySelector('.gallery')
     .firstElementChild.getBoundingClientRect();
