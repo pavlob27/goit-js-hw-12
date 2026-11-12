@@ -1,5 +1,6 @@
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import iziToast from 'izitoast';
 
 
 
@@ -42,7 +43,7 @@ export function createGallery(images) {
     )
     .join('');
 
-  galleryContainer.innerHTML = markup;
+  galleryContainer.insertAdjacentHTML('beforeend', markup);
   lightbox.refresh();
 }
 
@@ -61,3 +62,20 @@ export function hideLoader() {
     loaderContainer.classList.add('is-hidden');
   }
 }
+
+export const loadMore = document.querySelector(".btn-load-more");
+
+export function showLoadMoreBtn() {
+  loadMore.classList.remove('is-hidden');
+}
+
+export function hideLoadMoreBtn() {
+  loadMore.classList.add('is-hidden');
+  iziToast.warning({
+      title: 'Warning',
+      message: 'Were sorry, but youve reached the end of search results',
+      position: 'topRight',
+    });
+}
+
+
