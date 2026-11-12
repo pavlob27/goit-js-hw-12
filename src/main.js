@@ -22,6 +22,14 @@ let maxPages;
 
 let searchQuery;
 
+function showEndOfResultsMessage() {
+  iziToast.info({
+    title: 'Warning',
+    message: "You've reached the end of search results.",
+    position: 'topRight',
+  });
+}
+
 async function handleSearch(event) {
   event.preventDefault();
 
@@ -39,9 +47,12 @@ async function handleSearch(event) {
     return;
   }
 
+  hideLoadMoreBtn();
   clearGallery();
 
   showLoader();
+
+  let searchSucceeded = false;
 
   try {
     const data = await getImagesByQuery(searchQuery, currentPage);
@@ -57,6 +68,7 @@ async function handleSearch(event) {
     }
     maxPages = Math.ceil(data.totalHits / PAGE_SIZE);
     createGallery(data.hits);
+    searchSucceeded = true;
   } catch (error) {
     iziToast.error({
       title: 'Error',
@@ -67,8 +79,11 @@ async function handleSearch(event) {
   } finally {
     hideLoader();
     form.reset();
-    if (currentPage >= maxPages) {
+    if (!searchSucceeded) {
       hideLoadMoreBtn();
+    } else if (currentPage >= maxPages) {
+      hideLoadMoreBtn();
+      showEndOfResultsMessage();
     } else {
       showLoadMoreBtn();
     }
@@ -82,11 +97,15 @@ loadMore.addEventListener('click', async () => {
   }
 
   currentPage += 1;
+  hideLoadMoreBtn();
   showLoader();
+
+  let requestSucceeded = false;
 
   try {
     const data = await getImagesByQuery(searchQuery, currentPage);
     createGallery(data.hits);
+    requestSucceeded = true;
 
     const firstGalleryItem = document.querySelector('.gallery')?.firstElementChild;
 
@@ -109,6 +128,9 @@ loadMore.addEventListener('click', async () => {
     hideLoader();
     if (currentPage >= maxPages) {
       hideLoadMoreBtn();
+      if (requestSucceeded) {
+        showEndOfResultsMessage();
+      }
     } else {
       showLoadMoreBtn();
     }

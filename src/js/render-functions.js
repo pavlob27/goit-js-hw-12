@@ -1,6 +1,5 @@
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import iziToast from 'izitoast';
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captions: true,
@@ -69,11 +68,5 @@ export function showLoadMoreBtn() {
 export function hideLoadMoreBtn() {
   if (loadMore) {
     loadMore.classList.add('is-hidden');
-
-    iziToast.info({
-      title: 'Warning',
-      message: 'Were sorry, but youve reached the end of search results',
-      position: 'topRight',
-    });
   }
 }
