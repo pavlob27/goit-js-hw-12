@@ -9,7 +9,7 @@ import {
   hideLoader,
   showLoadMoreBtn,
   hideLoadMoreBtn,
-  loadMore,
+  addLoadMoreListener,
 } from './js/render-functions.js';
 
 const searchForm = document.querySelector('form');
@@ -90,7 +90,7 @@ async function handleSearch(event) {
   }
 }
 
-loadMore.addEventListener('click', async () => {
+addLoadMoreListener(async () => {
   if (currentPage >= maxPages) {
     hideLoadMoreBtn();
     return;
